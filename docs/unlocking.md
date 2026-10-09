@@ -12,10 +12,13 @@ host, **3)** install with the add-on.
 TWRP exists only on an **unlocked** Dot. If yours was never unlocked, run the amonet-biscuit
 `fastbrick` exploit **once**, from a PC:
 
-- Guide: [the XDA thread](https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-dot-2nd-gen-2016-biscuit.4761416/).
+- Guide / reference: [the XDA thread](https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-dot-2nd-gen-2016-biscuit.4761416/).
 - Unplug power, hold the **action button** (the dot, "•"), plug power back in → **green** LED
   (Amazon factory fastboot). Release.
-- Run `fastbrick.sh` (Linux) or `fastbrick.bat` (Windows), **type `YES`** when prompted, and
+- Run `fastbrick.sh` (Linux) or `fastbrick.bat` (Windows); a known-working copy of the shell
+  script is kept in this repo —
+  [`third_party/amonet-biscuit/fastbrick.sh`](../third_party/amonet-biscuit/fastbrick.sh)
+  (run it from inside the extracted amonet package). **Type `YES`** when prompted, and
   watch the LEDs. **DO NOT INTERRUPT AFTER THE 10-SECOND GRACE PERIOD — ANY INTERRUPTION BRICKS
   THE DEVICE.** Wait up to 1 minute.
 - The ring goes green again and the Dot **reboots into TWRP (steady white LED)**.

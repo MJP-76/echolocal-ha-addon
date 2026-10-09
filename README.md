@@ -28,13 +28,14 @@ uninstall, and it adds no entities.
    already unlocked):
    - Download the latest **amonet-biscuit** package from the
      [XDA thread](https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-dot-2nd-gen-2016-biscuit.4761416/)
-     and extract it.
+     (reference for the full procedure) and extract it.
    - Connect the Dot to the PC with a data USB cable. Unplug its power, then reconnect it
      **while holding the action button** (the dot — "•") until the ring glows **green**
      (Amazon factory fastboot). Release.
    - Run **`fastbrick.sh`** (Linux, in a terminal inside the extracted folder) or
-     **`fastbrick.bat`** (Windows, double-click). **Type `YES`** when prompted and follow the
-     on-screen instructions.
+     **`fastbrick.bat`** (Windows, double-click). A known-working copy of the shell script is
+     kept in this repo: [`third_party/amonet-biscuit/fastbrick.sh`](third_party/amonet-biscuit/fastbrick.sh).
+     **Type `YES`** when prompted and follow the on-screen instructions.
    - **DO NOT INTERRUPT THE PROCESS AFTER THE 10-SECOND GRACE PERIOD — ANY INTERRUPTION BRICKS
      THE DEVICE.** Watch the LEDs — the ring shows progress.
    - Wait up to a minute: the ring turns green again and the Dot **reboots into TWRP —
