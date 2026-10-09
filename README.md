@@ -15,22 +15,29 @@ uninstall, and it adds no entities.
 ## Requirements
 
 - **Home Assistant OS** on hardware with a free USB port (the add-on uses `usb: true`).
-- An Echo Dot **already unlocked, with TWRP as its recovery** (the `amonet-biscuit` unlock).
-  This add-on cannot unlock a device — that is a physical, one-time procedure.
+- An Echo Dot **already unlocked, with TWRP as its recovery** — the amonet-biscuit unlock,
+  [Option 1, no disassembly on a working Dot](docs/unlocking.md): unplug power, hold the
+  **action button** (the dot — "•"), plug power back in → **green** LED (factory fastboot),
+  then run `fastbrick` from a PC and flash FireOS 6 to both slots. This add-on does **not**
+  run the exploit; it takes over once the device is unlocked and booted into TWRP.
 - The Dot connected to the Home Assistant host by USB.
-- The Dot powered on **into TWRP recovery** before you start (how: see **Entering TWRP** below).
+- The Dot booted **into TWRP recovery** before you start (how: see **Entering TWRP** below).
 
 ### Entering TWRP (before each install)
 
-TWRP is entered with a **physical button combo** — hold the **mute** (or **volume-up**) button
-on the Dot and apply power, keeping the button held until TWRP loads. This is a manual step; the
-add-on cannot trigger it:
+On an unlocked biscuit the volume buttons are the boot-mode selector (amonet v2.0+):
 
-- For an **unlocked but not-yet-EchoLocal** Dot (this add-on's target), only a button combo
-  reliably reaches recovery.
-- `adb reboot recovery` works only while the Dot is already running Android with adb authorized
-  to this add-on's key — i.e. only *after* EchoLocal is installed. It is a later convenience,
-  not a first-install path, and this add-on does not offer it yet.
+- **TWRP / recovery** — hold **ONLY the Volume Up** button and apply power. Keep holding until
+  the LED ring shows a **steady white**, then release.
+- Hacked **fastboot** — hold **ONLY Volume Down** and apply power (**rainbow** LED). Only needed
+  to re-run parts of the unlock.
+- **USBDL** (preloader, for unbricking) — hold the **Mute** button and apply power with USB
+  connected; there is **no LED**. This is *not* TWRP — hold Mute and you will *not* see recovery.
+
+Entering TWRP is always a manual step; the add-on cannot trigger it. `adb reboot recovery` is
+the only software path, and it works only while the Dot is already running Android with adb
+authorized to this add-on's key — i.e. only *after* EchoLocal is installed. It is a later
+convenience, not a first-install path, and this add-on does not offer it yet.
 
 > The add-on is not tested against every HAOS host. If `adb` cannot see the Dot, see
 > **Troubleshooting** below.
@@ -49,8 +56,8 @@ add-on cannot trigger it:
 
 ## Use
 
-1. Boot the Dot into TWRP recovery (see **Entering TWRP** above: hold **mute**/**volume-up** and
-   apply power), and connect it by USB.
+1. Boot the Dot into TWRP recovery (see **Entering TWRP** above: hold **Volume Up**, apply
+   power, steady white LED), and connect it by USB.
 2. In the panel, press **Refresh** and pick the device. It should show state `recovery`.
 3. Fill in a **name** (Home Assistant keys the device on this name) and your **Wi-Fi**
    details, then press **Install**.

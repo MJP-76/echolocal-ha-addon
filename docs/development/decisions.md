@@ -46,3 +46,19 @@ The image is plain `alpine:3.21` with `python3` and `android-tools` (which ships
 rather than the s6-based Home Assistant base image. The server is Python's stdlib only, so there
 is no `pip` step and nothing to keep patched. `android-tools` was verified to provide `adb` on
 Alpine 3.21.
+
+## D7 — Button-mode map verified against the XDA guide (2026-10-09)
+
+Verified from the amonet-biscuit XDA guide (Rortiz2, v2.0.0,
+https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-dot-2nd-gen-2016-biscuit.4761416/):
+
+- Unlock entry (healthy Dot, **no disassembly**): unplug power, hold the **action button**,
+  plug power in → **green** LED = Amazon factory fastboot → run `fastbrick` from a PC.
+  Test-point shorting is only the Option 2 route for a fully bricked unit.
+- After unlock, the volume buttons switch boot modes: **Volume Up = TWRP** (steady white LED),
+  **Volume Down = hacked fastboot** (rainbow), **Mute = USBDL/preloader** (no LED, unbrick only).
+
+Consequences: entering TWRP for an install is always a manual Volume-Up hold; hold Mute and the
+device goes to USBDL, not recovery. The earlier "hold mute or volume-up" phrasing in this
+README/session was wrong and superseded by this note. The add-on runs neither the unlock nor
+the TWRP entry.
