@@ -17,5 +17,8 @@ Single source of truth for outstanding work on this repository.
 
 ## Later
 
+- [ ] Convenience: a "boot to recovery" button using `adb reboot recovery` for Dots already
+      running rooted Android with adb authorized to this add-on — never for the first install,
+      which stays a manual button combo (README, "Entering TWRP").
 - [ ] Optional: re-configure Wi-Fi without a full re-install (upstream issue #83).
 - [ ] Optional: expose install progress to automations (would need a companion integration).

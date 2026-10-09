@@ -5,10 +5,12 @@ unlocked 2nd-generation Amazon Echo Dot, over USB, from a Home Assistant sidebar
 
 ## Prerequisites
 
-The add-on **cannot unlock** a device. The Dot must already be:
+The add-on **cannot unlock** a device and **cannot boot it into recovery**. The Dot must already
+be:
 
 - unlocked with the amonet-biscuit procedure (TWRP as recovery), **and**
-- powered on into **TWRP recovery**, **and**
+- booted into **TWRP recovery** — hold the **mute** (or **volume-up**) button and apply power,
+  keeping it held until recovery loads, **and**
 - connected to this Home Assistant host with a USB cable that carries data.
 
 ## Configuration
@@ -23,7 +25,8 @@ verifies its SHA-256 against the release's `checksums.txt`. The binary and adb k
 
 ## Using it
 
-1. Put the Dot into TWRP recovery, connect it by USB, and open the **EchoLocal Installer** panel.
+1. Boot the Dot into TWRP recovery (button combo: hold **mute**/**volume-up**, apply power),
+   connect it by USB, and open the **EchoLocal Installer** panel.
 2. Press **Refresh** and pick the device. It should list with state `recovery`.
 3. Enter a name and your Wi-Fi details, then press **Install**.
 4. Watch the log. When it finishes, Home Assistant discovers the device via ESPHome; the panel
