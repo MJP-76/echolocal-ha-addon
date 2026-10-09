@@ -35,9 +35,11 @@ On an unlocked biscuit the volume buttons are the boot-mode selector (amonet v2.
   connected; there is **no LED**. This is *not* TWRP — hold Mute and you will *not* see recovery.
 
 Entering TWRP is always a manual step; the add-on cannot trigger it. `adb reboot recovery` is
-the only software path, and it works only while the Dot is already running Android with adb
+a software path, but it works only while the Dot is already running Android with adb
 authorized to this add-on's key — i.e. only *after* EchoLocal is installed. It is a later
-convenience, not a first-install path, and this add-on does not offer it yet.
+convenience, not a first-install path, and this add-on does not offer it yet. From a PC, amonet's
+`fastboot-step.sh` can also flash TWRP and boot recovery directly from hacked fastboot (see
+[docs/unlocking.md](docs/unlocking.md)).
 
 > The add-on is not tested against every HAOS host. If `adb` cannot see the Dot, see
 > **Troubleshooting** below.

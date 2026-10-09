@@ -74,13 +74,24 @@ that **still boots**. amonet **v2.0.0+** only; FireOS 5 will not boot on v2.0 un
   Installer add-on (see the [README](../README.md)).
 - **Enter TWRP anytime:** hold **ONLY the Volume Up** button and apply power → **steady white**
   LED (release once recovery is up).
+- **Fastboot route (from a PC):** boot hacked fastboot (hold **Volume Down**, rainbow LED), then
+  run amonet's [`fastboot-step.sh`](https://github.com/R0rt1z2/amonet/blob/mt8163-biscuit/fastboot-step.sh)
+  — it flashes `bin/twrp.img` and reboots the Dot straight into TWRP:
+  `fastboot flash recovery bin/twrp.img && fastboot reboot recovery`.
 - Volume **Down** alone = hacked fastboot (rainbow LED); **Mute** = USBDL/preloader mode, for
   unbricking with MTKClient (no LED) — not TWRP.
 - TWRP is command-line only: `twrp install <zip>`, `twrp wipe data`, `twrp format data`,
   `twrp sideload`, `twrp reboot [recovery|poweroff|bootloader|download]`.
+- **Replacing the base OS**: the stock FireOS 6 image can be re-flashed in TWRP to both slots
+  (step 6 above — firmware from
+  [FTVDB](https://ftvdb.com/echo/firmware/com.amazon.biscuit.android.os/)); this add-on instead
+  replaces it with [EchoLocal](https://github.com/ygelfand/echolocal), a pure-Go rewrite of
+  Amazon's services that Home Assistant discovers like any ESPHome device.
 
 ## Source
 
 - Thread: https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-dot-2nd-gen-2016-biscuit.4761416/
-- Exploit: https://github.com/R0rt1z2/amonet (branch `mt8163-biscuit`)
+- Exploit: https://github.com/R0rt1z2/amonet (branch `mt8163-biscuit`) — unlock runs
+  `fastbrick.sh`; `fastboot-step.sh` flashes TWRP and boots recovery, `boot-recovery.sh` boots
+  recovery from a preloader handshake.
 - TWRP device tree: https://github.com/R0rt1z2/twrp_device_amazon_biscuit
