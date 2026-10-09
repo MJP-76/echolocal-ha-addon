@@ -2,16 +2,24 @@
 
 Single source of truth for outstanding work on this repository.
 
+## Done
+
+- [x] 2026-10-09 — End-to-end test on a fresh TWRP-unlocked Dot (G090LF0964540CET, "Lounge DOT"):
+      `usb: true` passthrough works on this HAOS host; add-on installed EchoLocal in ~96 s
+      (root 12/12, install 16/16, Wi-Fi up, echod resident after reboot, pairing key shown).
+      Required the 0.1.1 fix for install POST bodies lost through HA ingress (the ingress
+      proxy sends chunked transfer encoding; the server previously read only Content-Length).
+
 ## Now
 
-- [ ] Test the add-on end to end on a fresh, TWRP-unlocked Echo Dot and confirm `usb: true`
-      passthrough works on this HAOS host.
 - [ ] File the upstream fix for the `initRC` glob bug (issue #94) — patch and comment are
       drafted in `docs/development/upstream-initrc-fix.md`.
 
 ## Soon
 
 - [ ] Drop the TWRP `vendor/etc/init` workaround once a fixed `echoctl` release is pinned.
+      (Needed on Dot #1 G090LF09645406G2; NOT needed on Dot #2 G090LF0964540CET — keep it
+      until a fixed release is pinned, then remove server.py's `apply_vendor_workaround`.)
 - [ ] Add `icon.png` and `logo.png` to `echolocal_installer/`.
 - [ ] Surface the post-install `echoctl status` output in the panel.
 
