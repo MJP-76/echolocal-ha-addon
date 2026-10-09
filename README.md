@@ -59,7 +59,9 @@ convenience, not a first-install path, and this add-on does not offer it yet. Fr
 ## Use
 
 1. Boot the Dot into TWRP recovery (see **Entering TWRP** above: hold **Volume Up**, apply
-   power, steady white LED), and connect it by USB.
+   power, steady white LED), and connect it by USB. A freshly unlocked Dot is already in TWRP —
+   just move the cable from the PC to this host holding **Volume Up** (see
+   [docs/unlocking.md](docs/unlocking.md)).
 2. In the panel, press **Refresh** and pick the device. It should show state `recovery`.
 3. Fill in a **name** (Home Assistant keys the device on this name) and your **Wi-Fi**
    details, then press **Install**.

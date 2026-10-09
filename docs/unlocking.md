@@ -43,8 +43,20 @@ that **still boots**. amonet **v2.0.0+** only; FireOS 5 will not boot on v2.0 un
    on-screen instructions and watch the LEDs — the ring shows progress. **After the 10-second
    grace period, do not touch or interrupt anything.** Wait up to 1 minute.
 5. **Result.** The LED turns green again and the device **reboots into TWRP (steady white LED)**.
-6. **Flash FireOS 6 before it can boot.** The Dot uses an **A/B partitioning scheme**, so the
-   ROM must be installed to **both slots**. Get the latest FireOS 6 build for biscuit from
+
+**Two paths from here:**
+
+- **A — Install EchoLocal straight away (what this add-on does — no FireOS needed).** The Dot is
+  already sitting in TWRP. Leave the PC: unplug the Dot, then plug it into the **Home Assistant
+  host's USB port while holding the Volume Up button** — it powers up back into TWRP (white LED).
+  Open the **EchoLocal Installer** panel and install; `echoctl` flashes the EchoLocal boot image
+  and provisions the Dot. No FireOS is ever installed.
+- **B — Flash FireOS 6 first** (the original Option 1 route) if you want the stock OS to boot —
+  continue with steps 6–7, then install EchoLocal from TWRP as in path A.
+
+6. **Flash FireOS 6 (only path B — only if you want the stock OS to boot).** The Dot uses an
+   **A/B partitioning scheme**, so the ROM must be installed to **both slots**. Get the latest
+   FireOS 6 build for biscuit from
    [FTVDB](https://ftvdb.com/echo/firmware/com.amazon.biscuit.android.os/) (e.g. the NS65741
    build — the `bcbtool` line switches to the unused slot):
 
@@ -70,8 +82,11 @@ that **still boots**. amonet **v2.0.0+** only; FireOS 5 will not boot on v2.0 un
 
 ## After the unlock
 
-- The Dot boots FireOS 6 with **TWRP as recovery** — it is now ready for the EchoLocal
+- **The Dot now has TWRP as recovery** and — with or without FireOS — is ready for the EchoLocal
   Installer add-on (see the [README](../README.md)).
+- **Hand-off to Home Assistant:** with the Dot in TWRP (steady white LED), unplug it from the PC
+  and plug it into the Home Assistant host **while holding Volume Up** — it boots back into TWRP
+  and the add-on's panel lists it as `recovery`.
 - **Enter TWRP anytime:** hold **ONLY the Volume Up** button and apply power → **steady white**
   LED (release once recovery is up).
 - **Fastboot route (from a PC):** boot hacked fastboot (hold **Volume Down**, rainbow LED), then
