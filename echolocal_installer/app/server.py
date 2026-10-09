@@ -423,10 +423,31 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self._send(404, b"not found")
 
+    def _read_body(self):
+        """Read the request body, supporting both framing styles.
+
+        Home Assistant's ingress proxy forwards browser POSTs with chunked
+        transfer encoding (no Content-Length header), so reading only by
+        Content-Length silently loses the whole payload — which surfaced as
+        "no device selected" on every panel install. Support both.
+        """
+        if "chunked" in (self.headers.get("Transfer-Encoding", "") or "").lower():
+            data = b""
+            while True:
+                size_line = self.rfile.readline().strip()
+                size = int(size_line.split(b";")[0] or b"0", 16)
+                if size == 0:
+                    self.rfile.readline()  # trailing CRLF after the last chunk
+                    break
+                data += self.rfile.read(size)
+                self.rfile.readline()  # CRLF after each chunk
+            return data
+        length = int(self.headers.get("Content-Length", 0) or 0)
+        return self.rfile.read(length) if length else b""
+
     def do_POST(self):
         path = self.path.split("?", 1)[0]
-        length = int(self.headers.get("Content-Length", 0) or 0)
-        raw = self.rfile.read(length) if length else b""
+        raw = self._read_body()
         if path == "/api/install":
             try:
                 payload = json.loads(raw or b"{}")
