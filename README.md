@@ -50,8 +50,13 @@ uninstall, and it adds no entities.
 4. **Install.** Pick the device, enter a **name** (Home Assistant keys the device on this name)
    and your **Wi-Fi** details, then press **Install** and watch the live log. Leave TWRP alone
    until it finishes.
-5. **Done.** Home Assistant discovers the Dot through ESPHome; the panel shows the pairing key
-   (or the zero-PSK note) when there is one.
+5. **Add the Dot in Home Assistant.** When the install finishes, the panel shows the
+   **pairing (encryption) key** — copy it. Then open **Settings → Devices & Services →
+   ESPHome**: the freshly installed Dot (e.g. *Lounge DOT*) appears as a discovered device —
+   press **Configure** on it (or **Add Device** and enter the Dot's IP address) and
+   **paste the encryption key** into the config flow to finish pairing. If the panel showed a
+   zero-PSK note instead of a key, choose the zero-PSK / push-key option. Home Assistant then
+   creates the device and its entities.
 
 > **Boot modes after the unlock:** Volume **Up** = TWRP (white ring) · Volume **Down** = hacked
 > fastboot (rainbow) · **Mute** = USBDL (no LED). Only Volume Up matters here; the add-on cannot

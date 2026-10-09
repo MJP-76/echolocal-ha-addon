@@ -35,8 +35,13 @@ verifies its SHA-256 against the release's `checksums.txt`. The binary and adb k
    panel.
 2. Press **Refresh** and pick the device. It should list with state `recovery`.
 3. Enter a name and your Wi-Fi details, then press **Install**.
-4. Watch the log. When it finishes, Home Assistant discovers the device via ESPHome; the panel
-   shows the pairing key if one was generated, or notes zero-PSK provisioning if not.
+4. Watch the log. When it finishes, the panel shows the **pairing (encryption) key** if one
+   was generated, or notes zero-PSK provisioning if not.
+5. **Pair it in Home Assistant.** Copy the key, then open **Settings → Devices & Services →
+   ESPHome** — the new Dot appears as a discovered device. Press **Configure** on it (or
+   **Add Device** and enter the Dot's IP address) and **paste the encryption key** into the
+   config flow; the device and its entities are then created. With zero-PSK provisioning
+   there is no key to paste — choose the zero-PSK / push-key option in the flow instead.
 
 ## Notes
 

@@ -155,9 +155,10 @@
     </div>
     <div class="result" id="result">
       <div class="hint" style="margin-top:0">
-        Install finished. Home Assistant should now discover the device via ESPHome
-        (<b>Settings → Devices → Add device</b>). If a key is shown below, paste it when HA
-        asks; if there is no key, choose the zero-PSK / push-key option.
+        Install finished. Copy the pairing key below, then open
+        <b>Settings → Devices &amp; Services → ESPHome</b>: press <b>Configure</b> on the
+        discovered Dot (or <b>Add Device</b> and enter its IP) and paste the encryption key
+        into the config flow. If no key is shown, choose the zero-PSK / push-key option.
       </div>
       <div id="keyblock" style="display:none">
         <label>Pairing key</label>
@@ -262,9 +263,10 @@ es.onmessage = (ev) => {
     if (m.status === "done") {
       $("result").classList.add("show");
       $("result").querySelector(".hint").textContent =
-        "Install finished. Home Assistant should now discover the device via ESPHome " +
-        "(Settings → Devices → Add device). If a key is shown below, paste it when HA asks; " +
-        "if there is no key, choose the zero-PSK / push-key option.";
+        "Install finished. Copy the pairing key below, then open Settings → Devices & " +
+        "Services → ESPHome: press Configure on the discovered Dot (or Add Device and " +
+        "enter its IP) and paste the encryption key into the config flow. If no key is " +
+        "shown, choose the zero-PSK / push-key option instead.";
       if (m.key) {
         $("keyblock").style.display = "block";
         $("key").textContent = m.key;
