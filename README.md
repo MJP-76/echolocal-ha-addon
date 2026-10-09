@@ -22,27 +22,35 @@ uninstall, and it adds no entities.
   exploit; it takes over once the device is booted into TWRP. Full flow:
   [docs/unlocking.md](docs/unlocking.md) · [XDA thread](https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-dot-2nd-gen-2016-biscuit.4761416/).
 - The Dot connected to the Home Assistant host by USB.
-- The Dot booted **into TWRP recovery** before you start (how: see **Entering TWRP** below).
+- The Dot booted **into TWRP recovery** before you start (how: see **Steps — in order** below).
 
-### Entering TWRP (before each install)
+## Steps — in order
 
-On an unlocked biscuit the volume buttons are the boot-mode selector (amonet v2.0+):
+1. **Put the Dot into TWRP recovery.**
+   - *Button (no PC needed):* with power unplugged, hold **ONLY the Volume Up** button, apply
+     power, and keep holding until the LED ring is **steady white** — release once recovery is
+     up.
+   - *From a PC:* boot hacked fastboot (hold **Volume Down**, rainbow LED) and run amonet's
+     `fastboot-step.sh` — a known-working copy is kept in
+     [`third_party/amonet-biscuit/`](third_party/amonet-biscuit/fastboot-step.sh)
+     (`fastboot flash recovery bin/twrp.img && fastboot reboot recovery`).
+   - Volume **Down** = hacked fastboot, **Mute** = USBDL — neither is TWRP, so hold only
+     **Volume Up**. The add-on cannot trigger this step for you; it is manual.
+2. **Move the Dot to the Home Assistant host.** With it still in TWRP (white LED), unplug it and
+   plug it into this host's USB port **while holding the Volume Up button** — it powers up back
+   into TWRP on this host.
+3. **Open the EchoLocal Installer panel** (install the add-on first — see **Install** below),
+   start it and open the UI, then press **Refresh**: the Dot should list with state `recovery`.
+4. **Install.** Pick the device, enter a **name** (Home Assistant keys the device on this name)
+   and your **Wi-Fi** details, then press **Install** and watch the live log. Leave TWRP alone
+   until it finishes.
+5. **Done.** Home Assistant discovers the Dot through ESPHome; the panel shows the pairing key
+   (or the zero-PSK note) when there is one.
 
-- **TWRP / recovery** — hold **ONLY the Volume Up** button and apply power. Keep holding until
-  the LED ring shows a **steady white**, then release.
-- Hacked **fastboot** — hold **ONLY Volume Down** and apply power (**rainbow** LED). Only needed
-  to re-run parts of the unlock.
-- **USBDL** (preloader, for unbricking) — hold the **Mute** button and apply power with USB
-  connected; there is **no LED**. This is *not* TWRP — hold Mute and you will *not* see recovery.
-
-Entering TWRP is always a manual step; the add-on cannot trigger it. `adb reboot recovery` is
-a software path, but it works only while the Dot is already running Android with adb
-authorized to this add-on's key — i.e. only *after* EchoLocal is installed. It is a later
-convenience, not a first-install path, and this add-on does not offer it yet. From a PC, amonet's
-`fastboot-step.sh` can also flash TWRP and boot recovery directly from hacked fastboot — a
-known-working copy is kept in
-[`third_party/amonet-biscuit/`](third_party/amonet-biscuit/fastboot-step.sh) (see
-[docs/unlocking.md](docs/unlocking.md)).
+> Full walkthrough including the one-time unlock:
+> [docs/unlocking.md](docs/unlocking.md).
+> `adb reboot recovery` is a software path, but it works only *after* EchoLocal is installed
+> (rooted Android with adb authorized to this add-on) — never for the first install.
 
 > The add-on is not tested against every HAOS host. If `adb` cannot see the Dot, see
 > **Troubleshooting** below.
@@ -58,19 +66,6 @@ known-working copy is kept in
 
 3. Find **EchoLocal Installer** in the store and install it.
 4. Start it, then open it from the sidebar (or **Open Web UI**).
-
-## Use
-
-1. **Put the Dot into TWRP recovery** (see **Entering TWRP** above: hold **Volume Up**, apply
-   power, steady white LED — or amonet's `fastboot-step.sh` from a PC), then **move it to this
-   host**: unplug it and plug into the Home Assistant host's USB **while holding Volume Up** so
-   it powers up back into TWRP (full walkthrough:
-   [docs/unlocking.md](docs/unlocking.md)).
-2. In the panel, press **Refresh** and pick the device. It should show state `recovery`.
-3. Fill in a **name** (Home Assistant keys the device on this name) and your **Wi-Fi**
-   details, then press **Install**.
-4. Watch the live log. When it finishes, Home Assistant will discover the device through
-   ESPHome. The panel shows the pairing key (or the zero-PSK note) when there is one.
 
 ## How it works
 
