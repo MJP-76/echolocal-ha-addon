@@ -1,112 +1,75 @@
-# Unlocking a Dot — amonet-biscuit, Option 1
+# Getting the Dot into TWRP recovery
 
-Condensed (with permission wording kept) from the XDA guide by **Rortiz2**:
+The EchoLocal Installer add-on needs exactly one thing from the device: the Dot sitting in
+**TWRP recovery**. Everything else in the unlock article — the FireOS re-flash, the A/B slot
+switching, boot-root — is **not** needed for an EchoLocal install and is not covered here.
 
-https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-dot-2nd-gen-2016-biscuit.4761416/
+This page has three steps: **1)** put the Dot into TWRP, **2)** move it to the Home Assistant
+host, **3)** install with the add-on.
 
-Read that thread before starting — this page is a convenience copy of **Option 1** for a Dot
-that **still boots**. amonet **v2.0.0+** only; FireOS 5 will not boot on v2.0 unlocks.
+## One-time prerequisite: the unlock
 
-## ⚠️ Warnings
+TWRP exists only on an **unlocked** Dot. If yours was never unlocked, run the amonet-biscuit
+`fastbrick` exploit **once**, from a PC:
 
-- **This is for the 2nd-gen Echo Dot (biscuit), 2016, model RS03QR only.**
-- The process carries a **significant risk of permanently bricking** the device if anything
-  goes wrong. Proceed entirely at your own risk.
-- **DO NOT INTERRUPT THE PROCESS AFTER THE 10-SECOND GRACE PERIOD — ANY INTERRUPTION WILL
-  BRICK THE DEVICE.**
-- Never modify the bootloader or critical partitions (LK, Preloader, TZ) afterwards — that
-  permanently bricks the Dot with no recovery.
+- Guide: [the XDA thread](https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-dot-2nd-gen-2016-biscuit.4761416/).
+- Unplug power, hold the **action button** (the dot, "•"), plug power back in → **green** LED
+  (Amazon factory fastboot). Release.
+- Run `fastbrick.sh` (Linux) or `fastbrick.bat` (Windows), **type `YES`** when prompted, and
+  watch the LEDs. **DO NOT INTERRUPT AFTER THE 10-SECOND GRACE PERIOD — ANY INTERRUPTION BRICKS
+  THE DEVICE.** Wait up to 1 minute.
+- The ring goes green again and the Dot **reboots into TWRP (steady white LED)**.
 
-## What you need (Option 1)
+This is a **one-time** step — the unlock is never needed again, and no FireOS install follows
+for our purposes. If your Dot is already unlocked (e.g. running EchoLocal as another unit),
+skip straight to the next step.
 
-- A Windows or Linux computer (the exploit runs on the PC, not in Home Assistant).
-- A MicroUSB cable that carries data, to connect the Dot to that PC.
-- Windows only: install the [Kindle Fire driver](https://developer.amazon.com/docs/fire-tablets/connecting-adb-to-device.html#install_usb_driver)
-  (or [Google's USB driver for ADB & Fastboot](https://developer.android.com/studio/run/win-usb)).
+⚠️ The unlock is the only risky part of this whole flow and carries a
+**significant risk of permanently bricking** the device. Proceed entirely at your own risk.
+Never modify the bootloader or critical partitions (LK, Preloader, TZ) afterwards.
 
-> If your Dot is **already unlocked** and you just want to update amonet to a newer release,
-> flash the current `amonet-biscuit-vX.zip` in TWRP — do **not** re-run fastbrick.
-> If your Dot is **bricked** and cannot reach fastboot, use **Option 2** from the thread
-> (disassemble, short a test point to GND while running `bootrom-step.sh`) — not covered here.
+## Step 1 — Put the Dot into TWRP recovery
 
-## Steps
+Choose one of these two ways:
 
-1. **Get amonet.** Download the latest `amonet-biscuit-v2.0.0.zip` from the thread's
-   attachments and extract it.
-2. **Start fastbrick.** Open a terminal in the extracted folder:
-   - Windows: double-click `fastbrick.bat`
-   - Linux: `./fastbrick.sh`
-3. **Enter factory fastboot.** Unplug the power cable, then reconnect it **while holding the
-   action button** (the circle, "•"). Keep holding until the LED ring glows **green** — that is
-   Amazon's factory fastboot mode. Release.
-4. **Run the exploit.** The script detects the device; **type `YES`** when prompted. Follow all
-   on-screen instructions and watch the LEDs — the ring shows progress. **After the 10-second
-   grace period, do not touch or interrupt anything.** Wait up to 1 minute.
-5. **Result.** The LED turns green again and the device **reboots into TWRP (steady white LED)**.
+- **Without a PC — the button (easiest).** With power unplugged, hold **ONLY the Volume Up**
+  button, apply power, and keep holding until the LED ring is **steady white** — release once
+  recovery is up. (Volume **Down** = hacked fastboot, rainbow LED; **Mute** = USBDL/preloader —
+  neither is TWRP.)
+- **From a PC — amonet's `fastboot-step.sh`.** Boot the Dot into hacked fastboot (hold
+  **Volume Down**, rainbow LED), then run the known-working script we keep in this repository;
+  it flashes `bin/twrp.img` and reboots the Dot straight into TWRP:
+  [`third_party/amonet-biscuit/fastboot-step.sh`](../third_party/amonet-biscuit/fastboot-step.sh)
+  (run it from inside the extracted `amonet-biscuit-*.zip` release folder so its `bin/fastboot`
+  and `bin/twrp.img` are present).
 
-**Two paths from here:**
+You should now see the Dot as a recovery device (`adb devices` shows `recovery`, or the panel
+lists it with state `recovery`).
 
-- **A — Install EchoLocal straight away (what this add-on does — no FireOS needed).** The Dot is
-  already sitting in TWRP. Leave the PC: unplug the Dot, then plug it into the **Home Assistant
-  host's USB port while holding the Volume Up button** — it powers up back into TWRP (white LED).
-  Open the **EchoLocal Installer** panel and install; `echoctl` flashes the EchoLocal boot image
-  and provisions the Dot. No FireOS is ever installed.
-- **B — Flash FireOS 6 first** (the original Option 1 route) if you want the stock OS to boot —
-  continue with steps 6–7, then install EchoLocal from TWRP as in path A.
+## Step 2 — Move it to the Home Assistant host
 
-6. **Flash FireOS 6 (only path B — only if you want the stock OS to boot).** The Dot uses an
-   **A/B partitioning scheme**, so the ROM must be installed to **both slots**. Get the latest
-   FireOS 6 build for biscuit from
-   [FTVDB](https://ftvdb.com/echo/firmware/com.amazon.biscuit.android.os/) (e.g. the NS65741
-   build — the `bcbtool` line switches to the unused slot):
+With the Dot still in TWRP (white LED):
 
-   ```bash
-   adb shell twrp wipe cache
-   adb shell twrp wipe data
-   adb push update-kindle-biscuit_puffin-NS65741_user_8142_0013222530692.bin /sdcard/update.zip
-   adb shell twrp install /sdcard/update.zip
-   adb shell 's=$(bcbtool get_active); case $s in a) bcbtool set_active b;; b) bcbtool set_active a;; *) echo "unexpected: $s";; esac'
-   adb reboot recovery
-   adb shell twrp install /sdcard/update.zip
-   ```
+1. Unplug it from wherever it is currently connected (the PC, its charger, …).
+2. Plug it into the **Home Assistant host's** USB port **while holding the Volume Up button** —
+   it powers up back into TWRP.
+3. In Home Assistant, open the **EchoLocal Installer** panel: press **Refresh** and the Dot
+   should list with state `recovery`.
 
-7. **(Optional) Root and force ADB.** While still in TWRP:
+> If the panel cannot see the Dot, check the USB cable carries data and see the README's
+> Troubleshooting.
 
-   ```bash
-   adb push boot-root.zip /sdcard/
-   adb shell twrp install /sdcard/boot-root.zip
-   adb reboot
-   ```
+## Step 3 — Install with the add-on
 
-   > If ADB does not show up after the reboot, power-cycle the device.
+In the panel: pick the device, give it a **name** (Home Assistant keys the device on this), and
+its **Wi-Fi** details, then press **Install**. Watch the log — when it finishes, Home
+Assistant discovers the Dot as an ESPHome device and pairs it with the key the panel shows.
+The add-on takes over from TWRP; leave recovery mode alone during and after the flash.
 
-## After the unlock
-
-- **The Dot now has TWRP as recovery** and — with or without FireOS — is ready for the EchoLocal
-  Installer add-on (see the [README](../README.md)).
-- **Hand-off to Home Assistant:** with the Dot in TWRP (steady white LED), unplug it from the PC
-  and plug it into the Home Assistant host **while holding Volume Up** — it boots back into TWRP
-  and the add-on's panel lists it as `recovery`.
-- **Enter TWRP anytime:** hold **ONLY the Volume Up** button and apply power → **steady white**
-  LED (release once recovery is up).
-- **Fastboot route (from a PC):** boot hacked fastboot (hold **Volume Down**, rainbow LED), then
-  run amonet's [`fastboot-step.sh`](https://github.com/R0rt1z2/amonet/blob/mt8163-biscuit/fastboot-step.sh)
-  — it flashes `bin/twrp.img` and reboots the Dot straight into TWRP:
-  `fastboot flash recovery bin/twrp.img && fastboot reboot recovery`.
-- Volume **Down** alone = hacked fastboot (rainbow LED); **Mute** = USBDL/preloader mode, for
-  unbricking with MTKClient (no LED) — not TWRP.
-- TWRP is command-line only: `twrp install <zip>`, `twrp wipe data`, `twrp format data`,
-  `twrp sideload`, `twrp reboot [recovery|poweroff|bootloader|download]`.
-- **Replacing the base OS**: the stock FireOS 6 image can be re-flashed in TWRP to both slots
-  (step 6 above — firmware from
-  [FTVDB](https://ftvdb.com/echo/firmware/com.amazon.biscuit.android.os/)); this add-on instead
-  replaces it with [EchoLocal](https://github.com/ygelfand/echolocal), a pure-Go rewrite of
-  Amazon's services that Home Assistant discovers like any ESPHome device.
+Full instructions: [README](../README.md).
 
 ## Source
 
-- Thread: https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-dot-2nd-gen-2016-biscuit.4761416/
-- Exploit: https://github.com/R0rt1z2/amonet (branch `mt8163-biscuit`) — unlock runs
-  `fastbrick.sh`; `fastboot-step.sh` flashes TWRP and boots recovery, `boot-recovery.sh` boots
-  recovery from a preloader handshake.
-- TWRP device tree: https://github.com/R0rt1z2/twrp_device_amazon_biscuit
+- Thread (the unlock, steps as written by Rortiz2): https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-dot-2nd-gen-2016-biscuit.4761416/
+- amonet exploit: https://github.com/R0rt1z2/amonet (branch `mt8163-biscuit`)
+- Known-working script vendored here: [`third_party/amonet-biscuit/fastboot-step.sh`](../third_party/amonet-biscuit/fastboot-step.sh)

@@ -15,11 +15,12 @@ uninstall, and it adds no entities.
 ## Requirements
 
 - **Home Assistant OS** on hardware with a free USB port (the add-on uses `usb: true`).
-- An Echo Dot **already unlocked, with TWRP as its recovery** — the amonet-biscuit unlock,
-  [Option 1, no disassembly on a working Dot](docs/unlocking.md): unplug power, hold the
-  **action button** (the dot — "•"), plug power back in → **green** LED (factory fastboot),
-  then run `fastbrick` from a PC and flash FireOS 6 to both slots. This add-on does **not**
-  run the exploit; it takes over once the device is unlocked and booted into TWRP.
+- An Echo Dot **already unlocked, with TWRP as its recovery**. The amonet-biscuit unlock is a
+  **one-time PC step** (unplug power, hold the **action button** — the dot "•" — plug back in →
+  green LED, run `fastbrick`, type `YES`). For an EchoLocal install **nothing else from the
+  unlock guide is needed** — no FireOS re-flash, no root. This add-on does **not** run the
+  exploit; it takes over once the device is booted into TWRP. Full flow:
+  [docs/unlocking.md](docs/unlocking.md) · [XDA thread](https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-dot-2nd-gen-2016-biscuit.4761416/).
 - The Dot connected to the Home Assistant host by USB.
 - The Dot booted **into TWRP recovery** before you start (how: see **Entering TWRP** below).
 
@@ -38,7 +39,9 @@ Entering TWRP is always a manual step; the add-on cannot trigger it. `adb reboot
 a software path, but it works only while the Dot is already running Android with adb
 authorized to this add-on's key — i.e. only *after* EchoLocal is installed. It is a later
 convenience, not a first-install path, and this add-on does not offer it yet. From a PC, amonet's
-`fastboot-step.sh` can also flash TWRP and boot recovery directly from hacked fastboot (see
+`fastboot-step.sh` can also flash TWRP and boot recovery directly from hacked fastboot — a
+known-working copy is kept in
+[`third_party/amonet-biscuit/`](third_party/amonet-biscuit/fastboot-step.sh) (see
 [docs/unlocking.md](docs/unlocking.md)).
 
 > The add-on is not tested against every HAOS host. If `adb` cannot see the Dot, see
@@ -58,9 +61,10 @@ convenience, not a first-install path, and this add-on does not offer it yet. Fr
 
 ## Use
 
-1. Boot the Dot into TWRP recovery (see **Entering TWRP** above: hold **Volume Up**, apply
-   power, steady white LED), and connect it by USB. A freshly unlocked Dot is already in TWRP —
-   just move the cable from the PC to this host holding **Volume Up** (see
+1. **Put the Dot into TWRP recovery** (see **Entering TWRP** above: hold **Volume Up**, apply
+   power, steady white LED — or amonet's `fastboot-step.sh` from a PC), then **move it to this
+   host**: unplug it and plug into the Home Assistant host's USB **while holding Volume Up** so
+   it powers up back into TWRP (full walkthrough:
    [docs/unlocking.md](docs/unlocking.md)).
 2. In the panel, press **Refresh** and pick the device. It should show state `recovery`.
 3. Fill in a **name** (Home Assistant keys the device on this name) and your **Wi-Fi**
