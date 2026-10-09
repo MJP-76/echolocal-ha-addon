@@ -16,29 +16,34 @@ uninstall, and it adds no entities.
 
 - **Home Assistant OS** on hardware with a free USB port (the add-on uses `usb: true`).
 - An Echo Dot **already unlocked, with TWRP as its recovery**. The amonet-biscuit unlock is a
-  **one-time PC step** (unplug power, hold the **action button** — the dot "•" — plug back in →
-  green LED, run `fastbrick`, type `YES`). For an EchoLocal install **nothing else from the
-  unlock guide is needed** — no FireOS re-flash, no root. This add-on does **not** run the
-  exploit; it takes over once the device is booted into TWRP. Full flow:
+  **one-time PC step** — for an EchoLocal install **nothing else from the unlock guide is
+  needed** (no FireOS re-flash, no root). Full flow:
   [docs/unlocking.md](docs/unlocking.md) · [XDA thread](https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-dot-2nd-gen-2016-biscuit.4761416/).
 - The Dot connected to the Home Assistant host by USB.
 - The Dot booted **into TWRP recovery** before you start (how: see **Steps — in order** below).
 
 ## Steps — in order
 
-1. **Put the Dot into TWRP recovery.**
-   - *Button (no PC needed):* with power unplugged, hold **ONLY the Volume Up** button, apply
-     power, and keep holding until the LED ring is **steady white** — release once recovery is
-     up.
-   - *From a PC:* boot hacked fastboot (hold **Volume Down**, rainbow LED) and run amonet's
-     `fastboot-step.sh` — a known-working copy is kept in
-     [`third_party/amonet-biscuit/`](third_party/amonet-biscuit/fastboot-step.sh)
-     (`fastboot flash recovery bin/twrp.img && fastboot reboot recovery`).
-   - Volume **Down** = hacked fastboot, **Mute** = USBDL — neither is TWRP, so hold only
-     **Volume Up**. The add-on cannot trigger this step for you; it is manual.
-2. **Move the Dot to the Home Assistant host.** With it still in TWRP (white LED), unplug it and
-   plug it into this host's USB port **while holding the Volume Up button** — it powers up back
-   into TWRP on this host.
+1. **Unlock the Dot first — one-time, on a Windows/Linux PC** (skip this step if the Dot is
+   already unlocked):
+   - Download the latest **amonet-biscuit** package from the
+     [XDA thread](https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-dot-2nd-gen-2016-biscuit.4761416/)
+     and extract it.
+   - Connect the Dot to the PC with a data USB cable. Unplug its power, then reconnect it
+     **while holding the action button** (the dot — "•") until the ring glows **green**
+     (Amazon factory fastboot). Release.
+   - Run **`fastbrick.sh`** (Linux, in a terminal inside the extracted folder) or
+     **`fastbrick.bat`** (Windows, double-click). **Type `YES`** when prompted and follow the
+     on-screen instructions.
+   - **DO NOT INTERRUPT THE PROCESS AFTER THE 10-SECOND GRACE PERIOD — ANY INTERRUPTION BRICKS
+     THE DEVICE.** Watch the LEDs — the ring shows progress.
+   - Wait up to a minute: the ring turns green again and the Dot **reboots into TWRP —
+     steady white ring**.
+2. **Move the Dot to the Home Assistant host.** It is sitting in TWRP (white ring) from step 1
+   (or, if it has been rebooted since, enter TWRP first — hold **ONLY the Volume Up** button
+   and apply power until the white ring appears). Unplug it and plug it into this host's USB
+   port **while holding the Volume Up button until the white ring comes back** — the Dot is now
+   in TWRP on this host.
 3. **Open the EchoLocal Installer panel** (install the add-on first — see **Install** below),
    start it and open the UI, then press **Refresh**: the Dot should list with state `recovery`.
 4. **Install.** Pick the device, enter a **name** (Home Assistant keys the device on this name)
@@ -47,8 +52,13 @@ uninstall, and it adds no entities.
 5. **Done.** Home Assistant discovers the Dot through ESPHome; the panel shows the pairing key
    (or the zero-PSK note) when there is one.
 
-> Full walkthrough including the one-time unlock:
-> [docs/unlocking.md](docs/unlocking.md).
+> **Boot modes after the unlock:** Volume **Up** = TWRP (white ring) · Volume **Down** = hacked
+> fastboot (rainbow) · **Mute** = USBDL (no LED). Only Volume Up matters here; the add-on cannot
+> trigger TWRP entry, it is always manual. From a PC, amonet's
+> [`fastboot-step.sh`](third_party/amonet-biscuit/fastboot-step.sh) (kept in this repo — known
+> to work) can also flash TWRP and boot recovery from hacked fastboot.
+
+> Full walkthrough: [docs/unlocking.md](docs/unlocking.md).
 > `adb reboot recovery` is a software path, but it works only *after* EchoLocal is installed
 > (rooted Android with adb authorized to this add-on) — never for the first install.
 
