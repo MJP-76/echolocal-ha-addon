@@ -62,3 +62,19 @@ Consequences: entering TWRP for an install is always a manual Volume-Up hold; ho
 device goes to USBDL, not recovery. The earlier "hold mute or volume-up" phrasing in this
 README/session was wrong and superseded by this note. The add-on runs neither the unlock nor
 the TWRP entry.
+
+## D8 — The EchoMuse clean is file-level, never a partition (2026-10-18)
+
+Converting a Dot away from EchoMuse leaves a file footprint on `/data` that `echoctl install`
+does not remove: `/data/emos`, the EchoMuse firmware in `/data/local/bin`, Magisk in
+`/data/adb`, and stale Android Wi-Fi state in `/data/misc/wifi`. The add-on's optional
+**Wipe a previous EchoMuse install** checkbox removes exactly those paths over `adb` in TWRP
+before the flash.
+
+It deliberately does **not** wipe any partition. The biscuit's "unneeded" partitions are a
+trap: the amonet payload (`boot_a_amonet`/`boot_b_amonet`), LK, `nvram`/`proinfo` and the
+second boot slot are each either a brick, a lost unlock, lost radio calibration, or the
+device's last-resort recovery image. Partition numbering also differs between amonet v1.1.0
+and v2.0.0, so any partition-level action would have to resolve by name and carry real risk
+for little gain — the leftovers that actually matter live in files. A broader clean (cache,
+full userdata format, wiping slot B) can be added later, opt-in, if a real need shows up.

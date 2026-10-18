@@ -47,6 +47,11 @@ verifies its SHA-256 against the release's `checksums.txt`. The binary and adb k
 
 - **Installer only.** The add-on does not change Wi-Fi afterwards, reinstall, uninstall, or add
   any entities.
+- **Optional EchoMuse cleanup.** Tick **Wipe a previous EchoMuse install** on the install form
+  to remove a previous EchoMuse/emOS footprint from `/data` (`/data/emos`, `/data/local/bin`,
+  `/data/adb`, `/data/misc/wifi`) before the flash. It is file-level only and never writes a
+  partition, so the bootloader, the amonet unlock, TWRP and the radio calibration are
+  untouched. Leave it unticked for a Dot that never ran EchoMuse.
 - **Workaround for upstream issue #94.** Before flashing, the add-on creates a RAM-only
   placeholder at `/system/vendor/etc/init/echolocal-placeholder.rc` in TWRP so that a dangling
   `/system_root/vendor` symlink does not make `echoctl` abort while it lists init rc files. This

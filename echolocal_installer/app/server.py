@@ -46,6 +46,16 @@ ADB_HOME = os.path.join(DATA_DIR, ".android")
 # Remove together with apply_vendor_workaround once a fixed echoctl is pinned.
 WORKAROUND_RC = "echolocal-placeholder.rc"
 
+# A Dot previously running EchoMuse leaves a file footprint on /data. These are the ONLY
+# paths the "clean" option removes: files and directories, never a partition, and nothing
+# the bootloader, the amonet unlock, TWRP or the radio calibration depend on.
+ECHOMUSE_PATHS = (
+    "/data/emos",        # emOS state: wpa.conf, boot.state, boot-good.img, last_kmsg.*, console.pw
+    "/data/local/bin",   # EchoMuse firmware: server{,_a,_b} + start_server.sh
+    "/data/adb",         # Magisk (FireOS-with-root flow)
+    "/data/misc/wifi",   # stale Android Wi-Fi state EchoLocal does not use
+)
+
 
 def adb_env():
     env = os.environ.copy()
@@ -254,6 +264,36 @@ def apply_vendor_workaround(serial, state):
         hub.log_line("  could not confirm a placeholder; the install may stop at 'selinux permissive'.")
 
 
+# ------------------------------------------------ clean ---------------------------
+def path_exists(serial, path):
+    out, _ = adb_shell(serial, f"[ -e {path} ] && echo yes")
+    return "yes" in out
+
+
+def wipe_echomuse(serial):
+    """Remove a previous EchoMuse install's leftovers on /data, before installing.
+
+    File-level only: it deletes EchoMuse's own directories and never writes or erases a
+    partition, so the bootloader, the amonet unlock, TWRP and the radio calibration are
+    untouched by construction. Runs in TWRP with /data mounted; a failed removal is logged
+    and the install continues rather than aborting.
+    """
+    hub.log_line("Cleaning a previous EchoMuse install from /data …")
+    # Make sure the userdata partition is mounted and writable so the paths resolve.
+    adb_shell(serial, "twrp mount data >/dev/null 2>&1; mount /data >/dev/null 2>&1")
+    for path in ECHOMUSE_PATHS:
+        if path_exists(serial, path):
+            hub.log_line(f"  removing {path}")
+            adb_shell(serial, f"rm -rf {path}")
+        else:
+            hub.log_line(f"  {path} not present — skipped")
+    left = [path for path in ECHOMUSE_PATHS if path_exists(serial, path)]
+    if left:
+        hub.log_line(f"WARNING: still present after clean: {' '.join(left)}")
+    else:
+        hub.log_line("No EchoMuse leftovers on /data.")
+
+
 # ------------------------------------------------ install --------------------------
 def redact(argv):
     """Do not put the Wi-Fi passphrase in the log."""
@@ -325,6 +365,8 @@ def run_install(payload):
 
         ensure_echoctl(version)
         apply_vendor_workaround(serial, dev["state"])
+        if payload.get("clean"):
+            wipe_echomuse(serial)
 
         cmd = build_install_cmd(serial, name, ssid, password, reboot)
         hub.log_line("$ " + " ".join(redact(cmd)))
