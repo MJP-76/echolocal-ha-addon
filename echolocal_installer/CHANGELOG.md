@@ -2,12 +2,13 @@
 
 ## 0.1.3 — 2026-10-18
 
-- Optional **Wipe a previous EchoMuse install** checkbox on the install form. When ticked,
-  the add-on removes a previous EchoMuse/emOS footprint from `/data` (`/data/emos`,
-  `/data/local/bin`, `/data/adb`, `/data/misc/wifi`) over `adb` in TWRP before invoking
-  `echoctl install`. File-level only — it never writes or erases a partition, so the
-  bootloader, the amonet unlock, TWRP and the radio calibration are untouched. Unticked by
-  default; a failed removal is logged and the install continues.
+- Optional **Clean previous install leftovers** checkbox on the install form. When ticked,
+  the add-on removes previous-install leftovers from `/data` (`/data/emos`,
+  `/data/local/bin` — EchoMuse firmware, `/data/adb` — Magisk, `/data/misc/wifi` — stale
+  Android Wi-Fi state) over `adb` in TWRP before invoking `echoctl install`. File-level only
+  — it never writes or erases a partition, so the bootloader, the amonet unlock, TWRP and the
+  radio calibration are untouched. Unticked by default; paths that are not present are skipped
+  and a failed removal is logged without aborting the install.
 
 ## 0.1.2 — 2026-10-09
 

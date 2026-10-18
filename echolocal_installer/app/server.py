@@ -278,7 +278,7 @@ def wipe_echomuse(serial):
     untouched by construction. Runs in TWRP with /data mounted; a failed removal is logged
     and the install continues rather than aborting.
     """
-    hub.log_line("Cleaning a previous EchoMuse install from /data …")
+    hub.log_line("Cleaning previous install leftovers from /data …")
     # Make sure the userdata partition is mounted and writable so the paths resolve.
     adb_shell(serial, "twrp mount data >/dev/null 2>&1; mount /data >/dev/null 2>&1")
     for path in ECHOMUSE_PATHS:
@@ -291,7 +291,7 @@ def wipe_echomuse(serial):
     if left:
         hub.log_line(f"WARNING: still present after clean: {' '.join(left)}")
     else:
-        hub.log_line("No EchoMuse leftovers on /data.")
+        hub.log_line("No previous-install leftovers on /data.")
 
 
 # ------------------------------------------------ install --------------------------

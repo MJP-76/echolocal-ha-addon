@@ -68,8 +68,8 @@ the TWRP entry.
 Converting a Dot away from EchoMuse leaves a file footprint on `/data` that `echoctl install`
 does not remove: `/data/emos`, the EchoMuse firmware in `/data/local/bin`, Magisk in
 `/data/adb`, and stale Android Wi-Fi state in `/data/misc/wifi`. The add-on's optional
-**Wipe a previous EchoMuse install** checkbox removes exactly those paths over `adb` in TWRP
-before the flash.
+**Clean previous install leftovers** checkbox (added for exactly this case) removes those
+paths over `adb` in TWRP before the flash.
 
 It deliberately does **not** wipe any partition. The biscuit's "unneeded" partitions are a
 trap: the amonet payload (`boot_a_amonet`/`boot_b_amonet`), LK, `nvram`/`proinfo` and the
