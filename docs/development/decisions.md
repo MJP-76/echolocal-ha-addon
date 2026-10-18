@@ -89,3 +89,14 @@ glob-misses problem plus the dangling `/system_root/vendor` symlink — in the `
 `echoctl_version` moves off 0.0.8. D3's intent (pin a tested version, bump deliberately when a
 fix ships) still holds — and this bump should be confirmed on a real Dot before it is relied on,
 since all prior field evidence was gathered on 0.0.8.
+
+## D10 — Follow upstream releases by default (2026-10-18)
+
+D3 pinned `echoctl` to a tested version, which meant the add-on silently went stale (0.0.9
+shipped the #94 fix while we stayed on 0.0.8 and nobody noticed). At the maintainer's direction
+the default now *follows* the newest stable upstream release (`echoctl_version: latest`),
+resolved via GitHub's `/releases/latest` (excludes prereleases/drafts) and cached for an hour.
+An explicit tag still pins or rolls back for safety, checksums are still verified against
+`checksums.txt`, and a known-good fallback tag is used if GitHub is unreachable. This
+supersedes D3's pin-by-default stance; the escape hatch keeps the tested-version safety net
+available when it matters.

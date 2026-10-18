@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.6 — 2026-10-18
+
+- Follow upstream by default: `echoctl_version` now defaults to `latest`, resolving the newest
+  **stable** ygelfand/echolocal release (prereleases/drafts excluded) at install time, so the
+  add-on no longer goes stale when a new `echoctl` ships. An explicit tag still pins/rolls back,
+  checksums are still verified, a known-good fallback covers a GitHub outage, and the panel badge
+  shows the upstream version when it differs.
+
 ## 0.1.5 — 2026-10-18
 
 - Bump the pinned `echoctl` to **0.0.9**, which includes the upstream fix for the `initRC` glob /

@@ -21,7 +21,7 @@ be:
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `echoctl_version` | `0.0.9` | Version of the upstream `echoctl` binary to download and run. Keep pinned at the tested version; bump only after verifying a new release works. 0.0.9 includes the upstream fix for the `initRC` glob / dangling `/system_root/vendor` bug (ygelfand/echolocal#94), which is why the add-on no longer carries a TWRP placeholder workaround. |
+| `echoctl_version` | `latest` | Which upstream `echoctl` to download. `latest` (the default) follows the newest **stable** [ygelfand/echolocal](https://github.com/ygelfand/echolocal) release automatically (prereleases/drafts excluded), so the add-on never goes stale. Set an explicit tag (e.g. `0.0.9`) to pin or roll back. Checksums are always verified; a known-good fallback is used if GitHub is unreachable. |
 
 The add-on downloads the pinned `echoctl` Linux build for the host architecture at first use and
 verifies its SHA-256 against the release's `checksums.txt`. The binary and adb keys persist in

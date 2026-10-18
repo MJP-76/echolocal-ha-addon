@@ -228,7 +228,11 @@ async function loadDevices() {
 async function loadState() {
   try {
     const s = await api("api/state");
-    $("binbadge").textContent = `binary ${s.binary_ready ? "ready" : "pending"} (${s.echoctl_version})`;
+    let badge = `binary ${s.binary_ready ? "ready" : "pending"} (${s.echoctl_version})`;
+    if (s.echoctl_latest && s.echoctl_latest !== s.echoctl_version) {
+      badge += ` · upstream ${s.echoctl_latest} available`;
+    }
+    $("binbadge").textContent = badge;
     $("status").textContent = s.status;
     $("status").className = "badge " + s.status;
     if (s.busy) $("installbtn").disabled = true;

@@ -17,6 +17,7 @@ import platform
 import queue
 import subprocess
 import threading
+import time
 import urllib.request
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -136,8 +137,44 @@ def read_options():
         return {}
 
 
-def pinned_version():
-    return str(read_options().get("echoctl_version", "0.0.8"))
+# Known-good fallback if the GitHub latest-release lookup is unreachable, so a network blip
+# never leaves the version unresolved and never blocks an install.
+FALLBACK_VERSION = "0.0.9"
+_LATEST = {"tag": FALLBACK_VERSION, "at": 0.0}
+LATEST_TTL = 3600  # re-check upstream at most once an hour
+
+
+def latest_release(fetch=True):
+    """Newest stable upstream echoctl tag, cached for LATEST_TTL seconds.
+
+    Uses GitHub's /releases/latest, which excludes prereleases and drafts. With fetch=False the
+    cache is read without contacting GitHub so a state poll never blocks; the startup download
+    thread warms the cache. On failure the last good tag (initially FALLBACK_VERSION) is kept and
+    the lookup backs off for the TTL.
+    """
+    now = time.monotonic()
+    if _LATEST["at"] and (now - _LATEST["at"]) < LATEST_TTL:
+        return _LATEST["tag"]
+    if not fetch:
+        return _LATEST["tag"]
+    try:
+        data = json.loads(http_get(f"https://api.github.com/repos/{REPO}/releases/latest", timeout=30))
+        tag = (data.get("tag_name") or "").strip()
+        if tag:
+            _LATEST.update(tag=tag, at=now)
+            return tag
+    except Exception:  # noqa: BLE001 - GitHub unreachable; fall through to the cached tag
+        pass
+    _LATEST["at"] = now  # back off for the TTL even on failure, to avoid hammering the API
+    return _LATEST["tag"]
+
+
+def wanted_version(fetch=True):
+    """The echoctl version to install: 'latest' (the default) resolves to the newest stable upstream release; any other value pins to that exact tag (an escape hatch to roll back)."""
+    opt = str(read_options().get("echoctl_version", "latest")).strip()
+    if not opt or opt.lower() == "latest":
+        return latest_release(fetch=fetch)
+    return opt
 
 
 def installed_version():
@@ -330,7 +367,7 @@ def read_key(serial):
 
 def run_install(payload):
     try:
-        version = payload.get("version") or pinned_version()
+        version = payload.get("version") or wanted_version()
         serial = (payload.get("serial") or "").strip()
         if not serial:
             raise RuntimeError("no device selected")
@@ -440,11 +477,12 @@ class Handler(BaseHTTPRequestHandler):
             except OSError:
                 self._send(500, b"index.html missing", "text/plain; charset=utf-8")
         elif path == "/api/state":
-            version = pinned_version()
+            version = wanted_version(fetch=False)
             self._json({
                 "status": hub.status,
                 "busy": hub.busy,
                 "echoctl_version": version,
+                "echoctl_latest": latest_release(fetch=False),
                 "binary_ready": echoctl_ready(version),
                 "arch": platform.machine(),
                 "devices": [] if hub.busy else adb_devices(),
@@ -498,7 +536,7 @@ class Handler(BaseHTTPRequestHandler):
             else:
                 self._json({"started": False, "error": "an install is already running"}, 409)
         elif path == "/api/download":
-            threading.Thread(target=_download_thread, args=(pinned_version(),), daemon=True).start()
+            threading.Thread(target=_download_thread, args=(wanted_version(),), daemon=True).start()
             self._json({"started": True})
         else:
             self._send(404, b"not found")
@@ -533,7 +571,7 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     os.makedirs(BIN_DIR, exist_ok=True)
     os.makedirs(ADB_HOME, exist_ok=True)
-    version = pinned_version()
+    version = wanted_version()
     hub.log_line("EchoLocal Installer ready.")
     hub.log_line(
         f"echoctl {version} ({'cached' if echoctl_ready(version) else 'not downloaded yet'})."
