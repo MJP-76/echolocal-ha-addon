@@ -48,8 +48,11 @@ uninstall, and it adds no entities.
 3. **Open the EchoLocal Installer panel** (install the add-on first — see **Install** below),
    start it and open the UI, then press **Refresh**: the Dot should list with state `recovery`.
 4. **Install.** Pick the device, enter a **name** (Home Assistant keys the device on this name)
-   and your **Wi-Fi** details, then press **Install** and watch the live log. Leave TWRP alone
-   until it finishes.
+   and your **Wi-Fi** details. If the Dot previously ran EchoMuse (or is rooted with Magisk),
+   tick **Clean previous install leftovers** to remove that footprint from `/data` first —
+   file-level only, it never touches a partition. Then press **Install** and watch the live
+   log. Leave TWRP alone until it finishes; the log is also saved to `/data/last-install.log`
+   so you can review it afterwards.
 5. **Add the Dot in Home Assistant.** When the install finishes, the panel shows the
    **pairing (encryption) key** — copy it. Then open **Settings → Devices & Services →
    ESPHome**: the freshly installed Dot (e.g. *Lounge DOT*) appears as a discovered device —
@@ -97,6 +100,13 @@ uninstall, and it adds no entities.
 - The web UI lists devices with `adb devices -l` and runs
   `echoctl install --serial … --name … -y` with the Wi-Fi flags you supply. `echoctl` prints
   plain progress lines when its stdout is a pipe, which is exactly how it is run here.
+- The optional **Clean previous install leftovers** step removes a previous EchoMuse/Magisk
+  footprint from `/data` (`/data/emos`, `/data/local/bin`, `/data/adb`, `/data/misc/wifi`)
+  before the flash — file-level only, never a partition, so the bootloader, the unlock, TWRP and
+  the radio calibration are untouched.
+- Every install log is saved to `/data/last-install.log` (rewritten per run, so it always holds
+  the most recent one) and served read-only at `api/last-log`, so it survives a second install
+  or an add-on restart.
 
 ## Troubleshooting
 
