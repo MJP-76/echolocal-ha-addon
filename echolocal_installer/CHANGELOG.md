@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.4 — 2026-10-18
+
+- Rename the clean option to **Clean previous install leftovers** — it also covers generic
+  Magisk roots and skips paths that are not present. (The 0.1.3 wording shipped to hardware
+  before the rename landed, which stranded it; hence this bump.)
+- Persist each install log to `/data/last-install.log` (rewritten at the start of each
+  install, so it always holds the most recent run) and serve it read-only at
+  `GET /api/last-log`, so a completed run's log survives a second install or an add-on
+  restart. Startup and download lines are not persisted, and the file carries the same
+  redacted content as the panel (never the Wi-Fi passphrase).
+
 ## 0.1.3 — 2026-10-18
 
 - Optional **Clean previous install leftovers** checkbox on the install form. When ticked,

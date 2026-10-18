@@ -53,6 +53,10 @@ verifies its SHA-256 against the release's `checksums.txt`. The binary and adb k
   partition, so the bootloader, the amonet unlock, TWRP and the radio calibration are
   untouched. Leave it unticked for a fresh or already-clean Dot; anything not present is
   skipped.
+- **The install log is saved.** Every run is written to `/data/last-install.log`, rewritten at
+  the start of each install so it always holds the most recent run, and served read-only at
+  `api/last-log` on the panel origin. Startup/download lines are not written, and the file
+  carries the same redacted content as the panel log.
 - **Workaround for upstream issue #94.** Before flashing, the add-on creates a RAM-only
   placeholder at `/system/vendor/etc/init/echolocal-placeholder.rc` in TWRP so that a dangling
   `/system_root/vendor` symlink does not make `echoctl` abort while it lists init rc files. This

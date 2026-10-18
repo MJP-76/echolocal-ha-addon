@@ -4,6 +4,13 @@ Single source of truth for outstanding work on this repository.
 
 ## Done
 
+- [x] 2026-10-18 — Field test: two EchoMuse dots (emOS flow) converted via the add-on with
+      **Clean previous install leftovers** ticked. On G090LF0964540AQS ("Reception2 DOT") the
+      clean removed `/data/emos`, `/data/local/bin` and `/data/misc/wifi`; `/data/adb` absent
+      as expected (emOS flow installs no Magisk); post-check clean. echoctl 12/12 + 16/16 + 3/3,
+      Wi-Fi up (172.16.1.115), echod resident, key handled. The vendor placeholder was not
+      confirmed on this build but the install passed 'selinux permissive' anyway. The log was
+      only recovered after the fact — motivated the 0.1.4 rename sync and `/data/last-install.log`.
 - [x] 2026-10-09 — End-to-end test on a fresh TWRP-unlocked Dot (G090LF0964540CET, "Lounge DOT"):
       `usb: true` passthrough works on this HAOS host; add-on installed EchoLocal in ~96 s
       (root 12/12, install 16/16, Wi-Fi up, echod resident after reboot, pairing key shown).

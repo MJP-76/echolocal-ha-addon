@@ -18,6 +18,7 @@ import queue
 import subprocess
 import threading
 import urllib.request
+from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 PORT = 8099
@@ -29,6 +30,8 @@ BIN_DIR = os.path.join(DATA_DIR, "bin")
 ECHOCTL = os.path.join(BIN_DIR, "echoctl")
 VERSION_STAMP = os.path.join(BIN_DIR, "echoctl.version")
 OPTIONS_FILE = os.path.join(DATA_DIR, "options.json")
+# The most recent install log, persisted so it survives a second install or a restart.
+LAST_LOG = os.path.join(DATA_DIR, "last-install.log")
 
 REPO = "ygelfand/echolocal"
 ASSET_BY_MACHINE = {
@@ -106,6 +109,12 @@ class Hub:
             self.log.append(line)
             if len(self.log) > 8000:
                 del self.log[: len(self.log) - 8000]
+        if self.busy:  # persist install runs only; startup/download lines would pollute it
+            try:
+                with open(LAST_LOG, "a", encoding="utf-8") as fh:
+                    fh.write(line + "\n")
+            except OSError:
+                pass  # best-effort: the in-memory panel log is unaffected
         self._publish({"kind": "log", "line": line})
 
     def set_status(self, status, **extra):
@@ -402,6 +411,12 @@ def start_install(payload):
         if hub.busy:
             return False
         hub.log = []
+        try:
+            with open(LAST_LOG, "w", encoding="utf-8") as fh:
+                fh.write(f"== install started {datetime.now().isoformat(timespec='seconds')} "
+                         f"serial={payload.get('serial', '')} ==\n")
+        except OSError:
+            pass  # best-effort persistence
         hub.status = "running"
         hub.result = {}
         hub.busy = True
@@ -460,6 +475,12 @@ class Handler(BaseHTTPRequestHandler):
             })
         elif path == "/api/devices":
             self._json({"devices": adb_devices()})
+        elif path == "/api/last-log":
+            try:
+                with open(LAST_LOG, "rb") as fh:
+                    self._send(200, fh.read(), "text/plain; charset=utf-8")
+            except OSError:
+                self._send(200, b"", "text/plain; charset=utf-8")
         elif path == "/api/events":
             self._events()
         else:
