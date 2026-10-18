@@ -4,6 +4,12 @@ Single source of truth for outstanding work on this repository.
 
 ## Done
 
+- [x] 2026-10-18 — Field-verified 0.1.6 / echoctl 0.0.9 on a real Dot (G090LF0964540CET,
+      "Kitchen DOT", re-install + zero-PSK): follow-latest resolved 0.0.9, no workaround line,
+      clean ran (removed /data/emos, /data/local/bin, /data/misc/wifi; /data/adb skipped),
+      install 12/12 + 19/19 + 3/3, Wi-Fi up, echod resident, HA discovered it via zero-PSK.
+      Retires the "confirm 0.0.9" caveat in D9. (0.0.9 logs a harmless WARN when
+      /system/bin/getprop is absent — flagged upstream in ygelfand/echolocal#114.)
 - [x] 2026-10-18 — Bump pinned `echoctl` to 0.0.9 and remove the TWRP `vendor/etc/init`
       workaround (`apply_vendor_workaround`): upstream fixed the `initRC` glob bug
       (ygelfand/echolocal#94) in 0.0.9. Closes the old Soon item; see decision D9.
@@ -19,11 +25,6 @@ Single source of truth for outstanding work on this repository.
       (root 12/12, install 16/16, Wi-Fi up, echod resident after reboot, pairing key shown).
       Required the 0.1.1 fix for install POST bodies lost through HA ingress (the ingress
       proxy sends chunked transfer encoding; the server previously read only Content-Length).
-
-## Now
-
-- [ ] File the upstream fix for the `initRC` glob bug (issue #94) — patch and comment are
-      drafted in `docs/development/upstream-initrc-fix.md`.
 
 ## Soon
 
