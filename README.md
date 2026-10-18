@@ -88,23 +88,15 @@ uninstall, and it adds no entities.
 - `config.yaml` maps USB (`usb: true`), the host udev database (`udev: true`) and an Ingress
   panel on port 8099.
 - The image is `alpine` plus `android-tools` (so `adb`/`fastboot` exist) and `python3`.
-- On first run the add-on downloads the pinned `echoctl` Linux build for the host architecture
-  from the upstream GitHub release and verifies it against that release's `checksums.txt`.
+- The add-on follows the newest **stable** upstream `echoctl` release by default
+  (`echoctl_version: latest`), downloading the Linux build for the host architecture and
+  verifying it against that release's `checksums.txt`. Set `echoctl_version` to a specific tag
+  to pin or roll back. (An earlier Fire OS 6 install bug, upstream issue
+  [#94](https://github.com/ygelfand/echolocal/issues/94), is fixed in `echoctl` 0.0.9+, so no
+  workaround is carried.)
 - The web UI lists devices with `adb devices -l` and runs
   `echoctl install --serial … --name … -y` with the Wi-Fi flags you supply. `echoctl` prints
   plain progress lines when its stdout is a pipe, which is exactly how it is run here.
-
-### The recovery workaround
-
-`echoctl` 0.0.8 aborts on Fire OS 6 when `/system_root/vendor` is a dangling symlink whose
-target has no `etc/init/*.rc`, because a non-matching shell glob makes `ls` exit non-zero and
-the installer treats that as fatal (upstream issue
-[#94](https://github.com/ygelfand/echolocal/issues/94)).
-
-Before invoking `echoctl`, the add-on creates a throwaway placeholder in TWRP
-(`/system/vendor/etc/init/echolocal-placeholder.rc`) so the glob matches. It is RAM-only and
-disappears when the device reboots. This is removed as soon as a fixed `echoctl` release is
-pinned. See `docs/development/`.
 
 ## Troubleshooting
 
@@ -113,8 +105,8 @@ pinned. See `docs/development/`.
 - **`adb` sees nothing.** Some hosts need the add-on to have full device access. Enable
   **Protection mode off** in the add-on page, then in the add-on configuration set
   `full_access: true` (this maps all host devices in, and is broader than `usb: true`).
-- **Install stops at `selinux permissive` or `device name`.** The
-  `vendor/etc/init` workaround did not take. Re-run with the Dot freshly booted into TWRP.
+- **Install stops at `selinux permissive` or `device name`.** Re-run with the Dot freshly
+  booted into TWRP; the log is saved to `/data/last-install.log` for inspection.
 - **Wi-Fi step fails.** For a secured network you must supply the passphrase; leaving it blank
   joins with an empty password and fails. An SSID left blank only works when the Dot is
   already connected to (or has saved) a network.
