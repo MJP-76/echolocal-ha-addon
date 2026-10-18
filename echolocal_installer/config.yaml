@@ -1,5 +1,5 @@
 name: "EchoLocal Installer"
-version: "0.1.4"
+version: "0.1.5"
 slug: "echolocal_installer"
 description: "Flash and install EchoLocal onto an unlocked 2nd-generation Echo Dot from Home Assistant over USB."
 url: "https://github.com/MJP-76/echolocal-ha-addon"
@@ -16,6 +16,6 @@ panel_icon: "mdi:cellphone-arrow-down"
 panel_title: "EchoLocal Installer"
 stage: "experimental"
 options:
-  echoctl_version: "0.0.8"
+  echoctl_version: "0.0.9"
 schema:
   echoctl_version: "str"

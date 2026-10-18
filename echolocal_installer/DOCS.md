@@ -21,7 +21,7 @@ be:
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `echoctl_version` | `0.0.8` | Version of the upstream `echoctl` binary to download and run. Keep pinned at the tested version; bump only after verifying a new release works. 0.0.8 is the correct version for SDK 25 (Fire OS 6). |
+| `echoctl_version` | `0.0.9` | Version of the upstream `echoctl` binary to download and run. Keep pinned at the tested version; bump only after verifying a new release works. 0.0.9 includes the upstream fix for the `initRC` glob / dangling `/system_root/vendor` bug (ygelfand/echolocal#94), which is why the add-on no longer carries a TWRP placeholder workaround. |
 
 The add-on downloads the pinned `echoctl` Linux build for the host architecture at first use and
 verifies its SHA-256 against the release's `checksums.txt`. The binary and adb keys persist in
@@ -57,18 +57,14 @@ verifies its SHA-256 against the release's `checksums.txt`. The binary and adb k
   the start of each install so it always holds the most recent run, and served read-only at
   `api/last-log` on the panel origin. Startup/download lines are not written, and the file
   carries the same redacted content as the panel log.
-- **Workaround for upstream issue #94.** Before flashing, the add-on creates a RAM-only
-  placeholder at `/system/vendor/etc/init/echolocal-placeholder.rc` in TWRP so that a dangling
-  `/system_root/vendor` symlink does not make `echoctl` abort while it lists init rc files. This
-  disappears on reboot and is removed from the add-on once a fixed `echoctl` release is pinned.
 
 ## Troubleshooting
 
 - **No device detected** — confirm TWRP recovery and a data-capable cable. For some hosts,
   enable **Protection mode off** and set the add-on option `full_access: true` instead of
   relying on `usb: true`.
-- **Install stops at `selinux permissive` or `device name`** — the workaround did not take.
-  Reboot the Dot fresh into TWRP and run Install again.
+- **Install stops at `selinux permissive` or `device name`** — reboot the Dot fresh into TWRP
+  and run Install again; check `/data/last-install.log` for where it stopped.
 - **Wi-Fi fails** — for a secured network the passphrase is required; a blank one joins with an
   empty password. A blank SSID only works when the Dot is already connected to a network.
 

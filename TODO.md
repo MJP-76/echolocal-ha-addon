@@ -4,6 +4,9 @@ Single source of truth for outstanding work on this repository.
 
 ## Done
 
+- [x] 2026-10-18 — Bump pinned `echoctl` to 0.0.9 and remove the TWRP `vendor/etc/init`
+      workaround (`apply_vendor_workaround`): upstream fixed the `initRC` glob bug
+      (ygelfand/echolocal#94) in 0.0.9. Closes the old Soon item; see decision D9.
 - [x] 2026-10-18 — Field test: two EchoMuse dots (emOS flow) converted via the add-on with
       **Clean previous install leftovers** ticked. On G090LF0964540AQS ("Reception2 DOT") the
       clean removed `/data/emos`, `/data/local/bin` and `/data/misc/wifi`; `/data/adb` absent
@@ -24,9 +27,6 @@ Single source of truth for outstanding work on this repository.
 
 ## Soon
 
-- [ ] Drop the TWRP `vendor/etc/init` workaround once a fixed `echoctl` release is pinned.
-      (Needed on Dot #1 G090LF09645406G2; NOT needed on Dot #2 G090LF0964540CET — keep it
-      until a fixed release is pinned, then remove server.py's `apply_vendor_workaround`.)
 - [ ] Add `icon.png` and `logo.png` to `echolocal_installer/`.
 - [ ] Surface the post-install `echoctl status` output in the panel.
 

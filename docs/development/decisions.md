@@ -78,3 +78,14 @@ device's last-resort recovery image. Partition numbering also differs between am
 and v2.0.0, so any partition-level action would have to resolve by name and carry real risk
 for little gain — the leftovers that actually matter live in files. A broader clean (cache,
 full userdata format, wiping slot B) can be added later, opt-in, if a real need shows up.
+
+## D9 — Bump to echoctl 0.0.9, drop the #94 workaround (2026-10-18)
+
+Upstream fixed the `initRC` glob bug (ygelfand/echolocal#94) — the `ls` non-zero-exit-when-a-
+glob-misses problem plus the dangling `/system_root/vendor` symlink — in the `0.0.9` release
+(2026-10-15; the `system.go` change landed 2026-10-08). Verified directly: the `0.0.9` tag's
+`initRC` uses `ShellCode` and resolves the vendor path via `readlink`/`vendorUnder`, matching
+`main`. So D4's RAM-placeholder workaround and `apply_vendor_workaround` are removed and
+`echoctl_version` moves off 0.0.8. D3's intent (pin a tested version, bump deliberately when a
+fix ships) still holds — and this bump should be confirmed on a real Dot before it is relied on,
+since all prior field evidence was gathered on 0.0.8.

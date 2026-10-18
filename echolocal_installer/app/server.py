@@ -45,10 +45,6 @@ ASSET_BY_MACHINE = {
 # across restarts, so its key lives on the persistent volume.
 ADB_HOME = os.path.join(DATA_DIR, ".android")
 
-# TWRP RAM-only placeholder for upstream issue #94 (dangling /system_root/vendor symlink).
-# Remove together with apply_vendor_workaround once a fixed echoctl is pinned.
-WORKAROUND_RC = "echolocal-placeholder.rc"
-
 # A Dot previously running EchoMuse leaves a file footprint on /data. These are the ONLY
 # paths the "clean" option removes: files and directories, never a partition, and nothing
 # the bootloader, the amonet unlock, TWRP or the radio calibration depend on.
@@ -255,24 +251,6 @@ def adb_shell(serial, script, timeout=30):
     return proc.stdout.strip(), proc.returncode
 
 
-# ------------------------------------------------ workaround -----------------------
-def apply_vendor_workaround(serial, state):
-    if state != "recovery":
-        hub.log_line("Device is not in recovery; skipping the vendor/etc/init workaround.")
-        return
-    hub.log_line("Applying the recovery vendor/etc/init workaround (echoctl issue #94) …")
-    script = (
-        "mkdir -p /system/vendor/etc/init 2>/dev/null; "
-        f"touch /system/vendor/etc/init/{WORKAROUND_RC} 2>/dev/null; "
-        "ls /system/vendor/etc/init/*.rc 2>/dev/null | head -n 1"
-    )
-    out, _ = adb_shell(serial, script)
-    if out:
-        hub.log_line(f"  vendor/etc/init now holds: {out.splitlines()[-1]}")
-    else:
-        hub.log_line("  could not confirm a placeholder; the install may stop at 'selinux permissive'.")
-
-
 # ------------------------------------------------ clean ---------------------------
 def path_exists(serial, path):
     out, _ = adb_shell(serial, f"[ -e {path} ] && echo yes")
@@ -373,7 +351,6 @@ def run_install(payload):
             raise RuntimeError(f"device {serial} is {dev['state']}; echoctl needs it 'device' or 'recovery'")
 
         ensure_echoctl(version)
-        apply_vendor_workaround(serial, dev["state"])
         if payload.get("clean"):
             wipe_echomuse(serial)
 

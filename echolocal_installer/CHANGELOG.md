@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.5 — 2026-10-18
+
+- Bump the pinned `echoctl` to **0.0.9**, which includes the upstream fix for the `initRC` glob /
+  dangling `/system_root/vendor` bug (ygelfand/echolocal#94).
+- Remove the TWRP `vendor/etc/init` RAM-placeholder workaround (`apply_vendor_workaround`) —
+  no longer needed now that a fixed `echoctl` is pinned.
+
 ## 0.1.4 — 2026-10-18
 
 - Rename the clean option to **Clean previous install leftovers** — it also covers generic
